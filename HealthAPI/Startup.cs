@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using HealthAPI.Data;
 
 namespace HealthAPI
 {
@@ -25,6 +27,7 @@ namespace HealthAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<HealthContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -43,6 +46,8 @@ namespace HealthAPI
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            DummyData.Initialize(app);
         }
     }
 }
